@@ -1,0 +1,181 @@
+{
+ "schemaVersion": 0,
+ "assessmentInformation": {
+  "reportTitle": "Anthos Migration Assessment Report",
+  "assessmentObjective": "Containerize",
+  "scope": [],
+  "preparedBy": "mikegcoleman",
+  "sourceDataDate": "2021-06-16T16:25:50.000Z",
+  "assessmentDate": "2021-06-16T16:27:01.405Z",
+  "toolName": "m4a-fit-analysis ver. 1.7.5",
+  "rulesVersion": 1
+ },
+ "vms": [
+  {
+   "vmDetails": {
+    "name": "paymentservicevm",
+    "osType": "Linux",
+    "workloads": [
+     {
+      "name": "Apache",
+      "isRunning": false,
+      "installPath": "N/A"
+     }
+    ],
+    "listeningPorts": [
+     "tcp\t0\t0\t0.0.0.0:22\t0.0.0.0:*\tLISTEN\t540/sshd",
+     "tcp6\t0\t0\t:::22\t:::*\tLISTEN\t540/sshd"
+    ],
+    "diskMounts": [
+     "/dev/sda1 / ext4 removed 0 0",
+     "/dev/sda15 /boot/efi vfat removed 0 0",
+     "UUID=d7961c9f-8636-4194-bcb7-b7861b5a470f / ext4 removed 0 1",
+     "UUID=B1D0-9D28 /boot/efi vfat removed 0 0"
+    ],
+    "recommendedJourney": "Containerize",
+    "vmFitScore": 1,
+    "sourceDataDate": "2021-06-16T16:25:50.000Z"
+   },
+   "journeys": [
+    {
+     "journey": {
+      "targetJourney": "Containerize"
+     },
+     "journeyFitScore": 1,
+     "results": [
+      {
+       "rule": "A1-STO-1",
+       "category": "Storage",
+       "result": "Pass",
+       "fitSeverity": 1,
+       "summary": "Unsupported network mount",
+       "testedFeature": "Detect unsupported network mounts",
+       "recommendation": "See Mounting External Volumes in documentation for more on how to attach NFS/CIFS volumes to deployment YAML.",
+       "findingDetails": ""
+      },
+      {
+       "rule": "A1-STO-2",
+       "category": "Storage",
+       "result": "Pass",
+       "fitSeverity": 5,
+       "summary": "Incompatible filesystem",
+       "testedFeature": "Detect unsupported filesystems",
+       "recommendation": "You cannot migrate workloads with an incompatible file system.",
+       "findingDetails": ""
+      },
+      {
+       "rule": "A1-STO-3",
+       "category": "Storage",
+       "result": "Pass",
+       "fitSeverity": 3,
+       "summary": "SELinux enforced",
+       "testedFeature": "Detect unsupported filesystem SElinux mode",
+       "recommendation": "Disable SELinux or manually apply an apparmor profile before migrating.",
+       "findingDetails": ""
+      },
+      {
+       "rule": "A1-STO-4",
+       "category": "Storage",
+       "result": "Pass",
+       "fitSeverity": 5,
+       "summary": "NFS share exported",
+       "testedFeature": "Detect unsupported NFS export",
+       "recommendation": "Migrate NFS servers to Cloud Filestore.",
+       "findingDetails": ""
+      },
+      {
+       "rule": "A1-STO-5",
+       "category": "Storage",
+       "result": "Pass",
+       "fitSeverity": 3,
+       "summary": "NFS share exported alongside with a running web server",
+       "testedFeature": "Detect NFS export on a web server workload",
+       "recommendation": "Consider migrating the detected Web Server, but ensure there is no dependency on the detected NFS Server.",
+       "findingDetails": ""
+      },
+      {
+       "rule": "A1-NET-1",
+       "category": "Networking",
+       "result": "Pass",
+       "fitSeverity": 1,
+       "summary": "Found a listener on non 0.0.0.0 IP address",
+       "testedFeature": "Detect usage of NIC binding by application",
+       "recommendation": "Update VM to listen on any one NIC because Migrate for Anthos only supports one NIC.",
+       "findingDetails": ""
+      },
+      {
+       "rule": "A1-NET-2",
+       "category": "Networking",
+       "result": "Pass",
+       "fitSeverity": 2,
+       "summary": "Found a listener on multiple non 0.0.0.0 IP addresses",
+       "testedFeature": "Detect processes listening on specific ports which require special handling",
+       "recommendation": "Update VM to listen on any one NIC because Migrate for Anthos only supports one NIC.",
+       "findingDetails": ""
+      },
+      {
+       "rule": "A1-NET-3",
+       "category": "Networking",
+       "result": "Pass",
+       "fitSeverity": 3,
+       "summary": "Found a listener on multiple non 0.0.0.0 IP addresses on the same port",
+       "testedFeature": "Detect processes listening on specific ports which require special handling",
+       "recommendation": "Update VM to listen on any one NIC because Migrate for Anthos only supports one NIC.",
+       "findingDetails": ""
+      },
+      {
+       "rule": "A1-NET-4",
+       "category": "Networking",
+       "result": "Pass",
+       "fitSeverity": 3,
+       "summary": "Found usage of multiple NICs",
+       "testedFeature": "Detect usage of multiple NIC",
+       "recommendation": "Multiple NICs on the source VM can mean that the VM uses multiple IP addresses. However, GKE and Anthos do not support multiple IP addresses.",
+       "findingDetails": ""
+      },
+      {
+       "rule": "A1-APP-2",
+       "category": "Application",
+       "result": "Pass",
+       "fitSeverity": 2,
+       "summary": "Running DB inside container",
+       "testedFeature": "Detect exitance of applications less fitted for containarization",
+       "recommendation": "Consider migarting to Cloud SQL.",
+       "findingDetails": ""
+      },
+      {
+       "rule": "A1-APP-3",
+       "category": "Application",
+       "result": "Pass",
+       "fitSeverity": 1,
+       "summary": "Docker running on VM",
+       "testedFeature": "Detect existance of docker software",
+       "recommendation": "Consider using Migrate for Compute Engine or running the containers directly on GKE/Anthos.",
+       "findingDetails": ""
+      },
+      {
+       "rule": "A1-NET-5",
+       "category": "Networking",
+       "result": "Fail",
+       "fitSeverity": 1,
+       "summary": "Static hosts detected",
+       "testedFeature": "Check usage of static hosts",
+       "recommendation": "See Adding entries to Pod /etc/hosts with HostAliases in documentation for information on modifying your static hosts.",
+       "findingDetails": "10.128.0.7 paymentservicevm.us-central1-b.c.mikegcoleman-forrester-m4a.internal paymentservicevm\n"
+      },
+      {
+       "rule": "A1-STO-7",
+       "category": "Storage",
+       "result": "Pass",
+       "fitSeverity": 5,
+       "summary": "Open block device",
+       "testedFeature": "Check existance of open files",
+       "recommendation": "Usage of open block files not compatible with M4A.",
+       "findingDetails": ""
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
